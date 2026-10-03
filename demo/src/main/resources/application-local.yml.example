@@ -1,0 +1,49 @@
+# 本地开发配置模板
+#
+# 使用方法：
+#   1. 复制本文件为同目录下的 application-local.yml（该文件已被 .gitignore 忽略，不会入库）
+#      cp application-local.yml.example application-local.yml
+#   2. 将 REPLACE_ME 替换为真实凭证；也可不改文件，直接通过环境变量注入
+#   3. demo 启动时激活 local profile（application.yml 中 spring.profiles.active=local），
+#      缺少该文件时将回退到占位符，上传/下载会失败
+#
+# 支持的环境变量（优先级高于本文件中的默认值）：
+#   QINIU_AK / QINIU_SK / QINIU_BUCKET / QINIU_DOMAIN
+#   ALIYUN_AK / ALIYUN_SK / ALIYUN_ENDPOINT / ALIYUN_BUCKET
+
+# 七牛云 Kodo 配置（obs.provider=qiniu 时生效）
+qiniu:
+  access-key: ${QINIU_AK:REPLACE_ME}
+  secret-key: ${QINIU_SK:REPLACE_ME}
+  bucket: ${QINIU_BUCKET:REPLACE_ME}
+  # 绑定域名（末尾不带 /），如 https://cdn.example.com
+  domain: ${QINIU_DOMAIN:https://REPLACE_ME.clouddn.com}
+  # 区域：auto|huadong|huabei|huanan|beimei|xinjiapo
+  region: auto
+
+# 阿里云 OSS 配置（切换 obs.provider=aliyun 时使用，见 application.yml）
+aliyun:
+  oss:
+    access-key-id: ${ALIYUN_AK:REPLACE_ME}
+    access-key-secret: ${ALIYUN_SK:REPLACE_ME}
+    endpoint: ${ALIYUN_ENDPOINT:REPLACE_ME}
+    bucket-name: ${ALIYUN_BUCKET:REPLACE_ME}
+
+# ---- 以下为可选本地覆盖项（默认值见 application.yml）----
+
+# 私有下载签名 URL 的有效期（秒）
+# qiniu:
+#   url-expire-seconds: 3600
+
+# 上传策略（类型白名单 / 大小上限，按场景覆盖）
+# file:
+#   upload:
+#     photo:
+#       max-size: 5242880
+
+# 软删除物理清理任务（默认关闭；本地联调可临时开启）
+# file:
+#   cleanup:
+#     enabled: true
+#     retention-days: 0
+#     cron: "0/30 * * * * ?"

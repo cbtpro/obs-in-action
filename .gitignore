@@ -1,0 +1,32 @@
+# ---- IDE / 编辑器 ----
+.idea/
+.vscode/
+*.iml
+
+# ---- TRAE 工具目录 ----
+.trae/
+
+# ---- 编辑器本地历史 ----
+.history/
+
+# ---- macOS ----
+.DS_Store
+
+# ---- Maven 构建产物 ----
+target/
+
+# ---- 前端依赖与构建产物 ----
+node_modules/
+dist/
+*.tsbuildinfo
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# ---- 本地配置（不入库，模板见各模块 application-local.yml.example）----
+*.local
+application-local.yml
+
+# ---- 前端本地 HTTPS 证书与私钥 ----
+frontend/.ssl/

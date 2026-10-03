@@ -1,0 +1,49 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: task-service
+
+  datasource:
+    url: ${MYSQL_URL:jdbc:mysql://localhost:3306/obs-in-action?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true}
+    username: ${MYSQL_USER:obs-in-action}
+    # 可用 MYSQL_PASSWORD 直接注入，或用脚本生成 ENC(...) 后替换默认占位值。
+    password: ${MYSQL_PASSWORD:ENC(dwZqYRKGNHeO2yte/YOExQmdJ65pWpB9pTd0FpqRuRvw1XypXKp0s506Yu5FpKXm)}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  quartz:
+    # JDBC 持久化：任务定义/断点存入 MySQL，服务重启后自动恢复
+    job-store-type: jdbc
+    jdbc:
+      # 表结构由 spring.sql.init 的 schema.sql 维护
+      initialize-schema: never
+    properties:
+      org:
+        quartz:
+          scheduler:
+            instanceId: AUTO
+          jobStore:
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+          threadPool:
+            class: org.quartz.simpl.SimpleThreadPool
+            threadCount: 2
+            threadPriority: 5
+
+  sql:
+    init:
+      # 首次启动建 Quartz 表；已存在时由 continue-on-error 忽略报错
+      mode: always
+      continue-on-error: true
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      id-type: auto
+
+logging:
+  level:
+    com.example.taskservice: info
+    com.example.task: debug

@@ -1,0 +1,211 @@
+/* ========== 主题变量 ========== */
+
+:root {
+  --border: #e4e7ed;
+  --primary: #1677ff;
+  --text-primary: #303133;
+  --text-secondary: #909399;
+  --text-heading: #303133;
+  --bg-body: #f5f7fa;
+  --bg-container: #fff;
+  --border-light: #f0f0f0;
+  --color-error: #ff4d4f;
+}
+
+[data-theme="dark"] {
+  --border: #424242;
+  --primary: #1668dc;
+  --text-primary: #ffffffd9;
+  --text-secondary: #a6a6a6;
+  --text-heading: #ffffffd9;
+  --bg-body: #000;
+  --bg-container: #141414;
+  --border-light: #303030;
+  --color-error: #ff7875;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: var(--bg-body);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
+    Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+/* 全局无圆角（用户偏好） */
+.ant-btn,
+.ant-card,
+.ant-image,
+.ant-list-item,
+.ant-upload,
+.ant-image-img,
+.ant-progress-inner,
+.ant-message-notice-content,
+[class*='ant-'] {
+  border-radius: 0 !important;
+}
+
+/* ========== 布局 ========== */
+
+.app-layout {
+  min-height: 100vh;
+}
+
+.app-header {
+  background: #001529 !important;
+  padding: 0 24px !important;
+  height: 56px !important;
+  line-height: 56px;
+  flex-shrink: 0;
+}
+
+/* 隐藏 Tabs 内容区（实际内容由路由渲染） */
+.app-tabs .ant-tabs-content-holder {
+  display: none !important;
+}
+
+/* Tabs 背景跟随主题 */
+.app-tabs .ant-tabs-nav,
+.app-tabs .ant-tabs-nav-wrap,
+.app-tabs .ant-tabs-nav-list {
+  background: var(--bg-container) !important;
+}
+
+/* Tabs 非激活标签文字可读性 */
+.app-tabs .ant-tabs-tab {
+  color: var(--text-secondary) !important;
+}
+
+.app-tabs .ant-tabs-tab:hover {
+  color: var(--text-primary) !important;
+}
+
+.app-tabs .ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: var(--primary) !important;
+}
+
+.app-content {
+  padding: 24px;
+  flex: 1;
+  background: var(--bg-body) !important;
+  color: var(--text-primary) !important;
+}
+
+.app-footer {
+  text-align: center;
+  border-top: 1px solid var(--border);
+  padding: 12px 24px !important;
+  background: var(--bg-container) !important;
+  color: var(--text-primary) !important;
+}
+
+/* ========== 文件管理 ========== */
+
+.uploader {
+  margin-bottom: 32px;
+}
+
+.upload-tasks {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+}
+
+.task {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-top: none;
+}
+
+.task:first-child {
+  border-top: 1px solid var(--border);
+}
+
+.task-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.task-progress {
+  width: 160px;
+}
+
+.task-error {
+  color: var(--color-error);
+  font-size: 12px;
+}
+
+.file-list {
+  margin-top: 24px;
+}
+
+.image-section,
+.doc-section {
+  margin-bottom: 32px;
+}
+
+.image-section h3,
+.doc-section h3 {
+  margin: 0 0 16px;
+  font-size: 16px;
+  color: var(--text-heading);
+}
+
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 16px;
+}
+
+.image-cell {
+  border: 1px solid var(--border);
+  background: var(--bg-container);
+  overflow: hidden;
+}
+
+.image-cell .ant-image {
+  display: block;
+  width: 100%;
+}
+
+.image-meta {
+  padding: 8px;
+}
+
+.image-meta .ant-typography {
+  display: block;
+}
+
+.file-icon {
+  font-size: 24px;
+  color: var(--primary);
+}
+
+@media (max-width: 640px) {
+  .app-content {
+    padding: 16px;
+  }
+
+  .image-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 12px;
+  }
+
+  .task-progress {
+    width: 100px;
+  }
+}

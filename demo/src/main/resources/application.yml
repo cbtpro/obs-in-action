@@ -1,0 +1,127 @@
+server:
+  port: 8080
+  servlet:
+    encoding:
+      charset: UTF-8
+      force: true
+
+spring:
+  application:
+    name: obs-demo
+  profiles:
+    active: local
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+      file-size-threshold: 2KB
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    defer-datasource-initialization: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+  sql:
+    init:
+      mode: always
+      continue-on-error: true
+  datasource:
+    url: ${MYSQL_URL:jdbc:mysql://localhost:3306/obs-in-action?useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai}
+    username: ${MYSQL_USER:obs-in-action}
+    # 可用 MYSQL_PASSWORD 直接注入，或用脚本生成 ENC(...) 后替换默认占位值。
+    password: ${MYSQL_PASSWORD:ENC(dwZqYRKGNHeO2yte/YOExQmdJ65pWpB9pTd0FpqRuRvw1XypXKp0s506Yu5FpKXm)}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+# 对象存储实现选择：qiniu | aliyun
+obs:
+  provider: qiniu
+
+# 上传策略（业务层校验，与存储厂商无关；缺省时使用 FileUploadPolicy 代码内默认值）
+file:
+  upload:
+    # 文件中心通用上传（50MB）
+    general:
+      allow-types:
+        - image/jpeg
+        - image/png
+        - image/gif
+        - image/webp
+        - image/bmp
+        - application/pdf
+        - application/zip
+        - application/x-zip-compressed
+        - application/msword
+        - application/vnd.openxmlformats-officedocument.wordprocessingml.document
+        - application/vnd.ms-excel
+        - application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+        - text/plain
+      max-size: 52428800
+    # 候选人照片（仅图片，5MB）
+    photo:
+      allow-types:
+        - image/jpeg
+        - image/png
+        - image/gif
+        - image/webp
+        - image/bmp
+      max-size: 5242880
+    # 候选人简历（文档类，10MB）
+    resume:
+      allow-types:
+        - application/pdf
+        - application/msword
+        - application/vnd.openxmlformats-officedocument.wordprocessingml.document
+        - application/vnd.ms-excel
+        - application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+        - text/plain
+        - application/zip
+        - application/x-zip-compressed
+      max-size: 10485760
+
+  # 软删除物理清理任务（L2 软删除配套）
+  # 删除接口只打标 deleted_at；本任务在保留期满后删对象存储对象并硬删 DB 行。
+  # 默认关闭：测试通过后置 enabled: true 启用（对象删除幂等，重复执行安全）
+  cleanup:
+    enabled: false
+    retention-days: 7
+    cron: "0 0 3 * * ?"
+
+  # 孤儿分片会话清理任务：创建超过保留天数仍未完成的会话 abort 云端并删行
+  # 默认关闭：测试通过后置 enabled: true 启用（abort 幂等，重复执行安全）
+  multipart:
+    cleanup:
+      enabled: false
+      retention-days: 1
+      cron: "0 0 4 * * ?"
+
+# 七牛云配置
+qiniu:
+  access-key: ${QINIU_AK:REPLACE_ME}
+  secret-key: ${QINIU_SK:REPLACE_ME}
+  bucket: ${QINIU_BUCKET:REPLACE_ME}
+  domain: ${QINIU_DOMAIN:http://REPLACE_ME.clouddn.com}
+  region: auto
+  # 私有下载签名 URL 的有效期（秒），默认 1 小时
+  url-expire-seconds: 3600
+
+# 阿里云 OSS 配置（切换 obs.provider=aliyun 时使用）
+aliyun:
+  oss:
+    access-key-id: ${ALIYUN_AK:REPLACE_ME}
+    access-key-secret: ${ALIYUN_SK:REPLACE_ME}
+    endpoint: ${ALIYUN_ENDPOINT:REPLACE_ME}
+    bucket-name: ${ALIYUN_BUCKET:REPLACE_ME}
+
+# MyBatis-Plus 配置（面试候选人模块）
+mybatis-plus:
+  mapper-locations: classpath*:mapper/**/*.xml
+  type-aliases-package: com.example.demo.infrastructure.persistence.mybatis
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+logging:
+  level:
+    com.example.demo: INFO
